@@ -1,5 +1,5 @@
 "use client"
-import {BatteryFull,Wifi,ChevronDown,Volume2,Grip} from "lucide-react"
+import {BatteryFull,Wifi,ChevronDown,Volume2,Grip,ChevronLeft,ChevronRight,X,House,Search,Square,Minus} from "lucide-react"
 import Image from "next/image"
 import { useState,useEffect } from "react"
 import Button from '@mui/material/Button';
@@ -102,7 +102,51 @@ export default function Home() {
 
      
 
-      <div className="bg-transparent w-[96%]">
+      <div className="bg-transparent w-[96%] flex justify-center items-center">
+
+
+      <div className="w-[45%] h-[55%] overflow-hidden bg-transparent/30 backdrop-blur rounded-lg border-[1px] shadow-lg border-black/100">
+
+          <div className="h-[8%] flex items-center justify-between px-2 bg-[#2B2B2B] border-b-[1px] border-black">
+                <div className="flex items-center gap-0.5 ">
+                    <ChevronLeft  size={20} color="#C2BFC0" className="bg-[#464648]  rounded-tl-sm rounded-bl-sm hover:cursor-pointer  hover:scale-[1.05] "/>
+                    <ChevronRight size={20} color="#C2BFC0" className="bg-[#393939] rounded-br-sm rounded-tr-sm hover:cursor-pointer hover:scale-[1.05]" />
+
+                  <button className="flex items-center ml-2 gap-1 text-[12px] font-semibold text-[#C2BFC0] bg-[#464443] pl-2 pr-1 py-0.5 rounded-[2px] hover:cursor-pointer">
+
+                    <House size={14} color="#C2BFC0" />
+                    Home
+                    <ChevronDown size={16} strokeWidth={2.5} color="#C2BFC0" className="mt-1" />
+                  </button>
+
+                </div>
+
+                <div className="flex items-center gap-2">
+                 
+                  <button className="bg-[#494949] px-1 py-1 rounded-[2px] mr-1">
+                  <Search size={15} color="#C2BFC0" strokeWidth={3} className=" hover:cursor-pointer  hover:scale-[1.05] " />
+                  </button>
+                  <Minus size={15} color="#C2BFC0" strokeWidth={3} className=" mt-1 hover:cursor-pointer  hover:scale-[1.05] " />
+                  <Square size={10} color="#C2BFC0" strokeWidth={3} className=" hover:cursor-pointer  hover:scale-[1.05] " />
+                  <X size={16} color="#C54918" strokeWidth={3} className=" hover:cursor-pointer  hover:scale-[1.05] " />
+
+                </div>
+          </div>
+
+          <div className=" h-full flex items-center justify-center  ">
+
+              <div className="w-[25%] bg-[rgb(56,56,56)] border-r-[1px] border-black h-full">
+
+              </div>
+
+              <div className="w-[75%] bg-[#333333] h-full">
+
+              </div>
+
+          </div>
+
+      </div>
+
 
       </div>
     </div>
