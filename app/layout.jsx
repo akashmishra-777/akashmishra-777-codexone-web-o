@@ -17,7 +17,7 @@ export default function RootLayout({children}) {
   return (
     <html lang="en">
       <body
-        className={`${ubuntu} antialiased`}
+        className={`${ubuntu} antialiased`} cz-shortcut-listen="true"
       >
         {children}
       </body>
