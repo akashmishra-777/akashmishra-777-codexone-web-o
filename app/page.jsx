@@ -1,10 +1,60 @@
 "use client"
-import {BatteryFull,Wifi,ChevronDown,Volume2,Grip,ChevronLeft,ChevronRight,X,House,Search,Square,Minus} from "lucide-react"
+import {BatteryFull,Wifi,ChevronDown,Volume2,Grip,StarOff,ArrowDownToLine,ChevronLeft,History,FileText,ChevronRight,X,Trash2,House,Search,HardDrive,Plus,Music4,Minus,FolderX ,ImageIcon,Film} from "lucide-react"
 import Image from "next/image"
-import { useState,useEffect } from "react"
-import Button from '@mui/material/Button';
+import { useState,useEffect,useRef } from "react"
+import { motion } from "framer-motion";
 import Tooltip from '@mui/material/Tooltip';
 export default function Home() {
+
+
+
+  const containerRef = useRef(null);
+  const [size, setSize] = useState({ width: 600, height: 400 });
+  const [position, setPosition] = useState({ x: 100, y: 100 });
+  const [isResizing, setIsResizing] = useState(false);
+  const [resizeDir, setResizeDir] = useState(null);
+
+
+
+  const startResize = (e, dir) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setIsResizing(true);
+    setResizeDir(dir);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isResizing) return;
+
+    setSize((prev) => {
+      const newSize = { ...prev };
+      const deltaX = e.movementX;
+      const deltaY = e.movementY;
+
+      if (resizeDir.includes("right"))
+        newSize.width = Math.max(300, prev.width + deltaX);
+      if (resizeDir.includes("bottom"))
+        newSize.height = Math.max(200, prev.height + deltaY);
+      if (resizeDir.includes("left")) {
+        newSize.width = Math.max(300, prev.width - deltaX);
+        setPosition((p) => ({ ...p, x: p.x + deltaX }));
+      }
+      if (resizeDir.includes("top")) {
+        newSize.height = Math.max(200, prev.height - deltaY);
+        setPosition((p) => ({ ...p, y: p.y + deltaY }));
+      }
+
+      return newSize;
+    });
+  };
+
+  const stopResize = () => {
+    setIsResizing(false);
+    setResizeDir(null);
+  };
+
+
+  
 
   const [timeDate,setTimeDate] = useState()
    useEffect(() => {
@@ -28,9 +78,9 @@ export default function Home() {
   }, []) // ✅
 
   return <>
- <div className="h-screen select-none bg-[url('/wall.jpg')] bg-cover bg-center">
+ <div ref={containerRef} className="h-screen overflow-hidden select-none bg-[url('/wall.jpg')] bg-cover bg-center">
     {/* Top Head */}
-    <div className="bg-[#171717]/70 px-3 text-[#C2BFC0] h-[3.5%] flex items-center justify-between">
+    <div className="bg-[#171717]/70 px-3 overflow-hidden text-[#C2BFC0] h-[3.5%] flex items-center justify-between">
 
     
 
@@ -50,8 +100,8 @@ export default function Home() {
 
     </div>
 
-    <div className="h-[96.5%] flex">
-      <div className="bg-[#140D14]/30  px-0 py-3 border-r-[1px] border-slate-900/30 backdrop-blur-md w-[4%] flex flex-col items-center justify-between ">
+    <div className="h-[96.5%] flex overflow-hidden">
+      <div className="bg-[#140D14]/30 overflow-hidden  px-0 py-3 border-r-[1px] border-slate-900/30 backdrop-blur-md w-[4%] z-0 flex flex-col items-center justify-between ">
 
         <div className="flex flex-col items-center justify-between">
 
@@ -102,53 +152,170 @@ export default function Home() {
 
      
 
-      <div className="bg-transparent w-[96%] flex justify-center items-center">
+      <div 
+     
+      
+      className="overflow-hidden z-1 w-[96%] flex justify-center items-center">
 
 
-      <div className="w-[45%] h-[55%] overflow-hidden bg-transparent/30 backdrop-blur rounded-lg border-[1px] shadow-lg border-black/100">
+      <motion.div
+       ref={containerRef}
+  drag
+  dragMomentum={false}
+  dragElastic={0}
+  transition={{ type: "tween", duration: 0 }}
+  className="w-[950px] resize h-[650px] min-w-[750px] min-h-[550px] max-w-[1400px] max-h-[900px] absolute overflow-hidden  backdrop-blur rounded-lg border border-black shadow-lg">
 
-          <div className="h-[8%] flex items-center justify-between px-2 bg-[#2B2B2B] border-b-[1px] border-black">
-                <div className="flex items-center gap-0.5 ">
-                    <ChevronLeft  size={20} color="#C2BFC0" className="bg-[#464648]  rounded-tl-sm rounded-bl-sm hover:cursor-pointer  hover:scale-[1.05] "/>
-                    <ChevronRight size={20} color="#C2BFC0" className="bg-[#393939] rounded-br-sm rounded-tr-sm hover:cursor-pointer hover:scale-[1.05]" />
+          <div className="py-2 flex items-center justify-between px-2 bg-[#222222] border-b-[1px] border-black">
 
-                  <button className="flex items-center ml-2 gap-1 text-[12px] font-semibold text-[#C2BFC0] bg-[#464443] pl-2 pr-1 py-0.5 rounded-[2px] hover:cursor-pointer">
+                <div className="flex items-center gap-0.5">
+
+                    <ChevronLeft  size={20} color="#C2BFC0" className="bg-[#464648]  rounded-tl-sm w-[25px] h-[25px] rounded-bl-sm hover:cursor-pointer hover:scale-[1.05] "/>
+                    
+                    <ChevronRight size={20} color="#C2BFC0" className="bg-[#393939] rounded-br-sm w-[24px] h-[25px] rounded-tr-sm hover:cursor-pointer hover:scale-[1.05]" />
+
+                  <button className="flex items-center ml-2 gap-1 text-[12px] font-semibold text-[#C2BFC0] bg-[#464443] pl-2 pr-1 py-[4px] rounded-[4px] hover:cursor-pointer shadow-[inset_0px_0px_2px_rgba(0,0,0,0.6)]" >
 
                     <House size={14} color="#C2BFC0" />
-                    Home
+                      Home
                     <ChevronDown size={16} strokeWidth={2.5} color="#C2BFC0" className="mt-1" />
+
                   </button>
 
                 </div>
 
                 <div className="flex items-center gap-2">
                  
-                  <button className="bg-[#494949] px-1 py-1 rounded-[2px] mr-1">
+                  <button className="bg-[#494949] shadow-[inset_0px_0px_2px_rgba(0,0,0,0.6)]  px-1.5 py-1.5 rounded-[4px] mr-1">
+                    
                   <Search size={15} color="#C2BFC0" strokeWidth={3} className=" hover:cursor-pointer  hover:scale-[1.05] " />
+
                   </button>
-                  <Minus size={15} color="#C2BFC0" strokeWidth={3} className=" mt-1 hover:cursor-pointer  hover:scale-[1.05] " />
-                  <Square size={10} color="#C2BFC0" strokeWidth={3} className=" hover:cursor-pointer  hover:scale-[1.05] " />
-                  <X size={16} color="#C54918" strokeWidth={3} className=" hover:cursor-pointer  hover:scale-[1.05] " />
+                  
+                  <button title="Minimize">
+
+                    <Minus  size={15} color="#C2BFC0" strokeWidth={3} className=" mt-1 hover:cursor-pointer  hover:scale-[1.05] " />
+
+                  </button>
+                  
+                  <button title="Close">
+
+                    <X size={16} color="#C54918" strokeWidth={3} className=" hover:cursor-pointer  hover:scale-[1.05] " />
+
+                  </button>
+
+                 
 
                 </div>
+
           </div>
 
           <div className=" h-full flex items-center justify-center  ">
 
-              <div className="w-[25%] bg-[rgb(56,56,56)] border-r-[1px] border-black h-full">
+              <div className="w-[25%] overflow-scroll bg-[#282828] border-r-[1px] border-[#1C1C1C] h-full">
+
+                    <div className="py-2 rounded-[2px_2px_2px_2px] shadow-[inset_2.5px_-2.5px_2px_rgba(0,0,0,0.6)] mx-1 my-1 flex items-center gap-1  px-2 bg-[#DA3451] text-white text-[15px] hover:cursor-pointer font-semibold  ">
+                      <History size={18} className="mt-0.5" strokeWidth={2} />
+                      <span>Recents</span>
+                    </div>
+
+                   
+
+                    <div className="py-2 rounded-[2px_2px_2px_2px] hover:bg-[#3d3c3c] mx-1 my-1 hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6)] flex items-center gap-1  px-2  text-white text-[15px] hover:cursor-pointer font-semibold hover:pl-3.5 transition-all  ">
+                      <StarOff size={18} className="mt-0.5" strokeWidth={2} />
+                      <span>Starred</span>
+                    </div>
+
+
+                    <hr className="bg-[#1C1C1C] text-[#1C1C1C]" />
+
+                    <div  className="py-2 rounded-[2px_2px_2px_2px] hover:bg-[#3d3c3c] mx-1 my-1 hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6)] flex items-center gap-1  px-2  text-white text-[15px] hover:cursor-pointer font-semibold hover:pl-3.5 transition-all  ">
+                      <House size={18} className="mt-0.5" strokeWidth={2} />
+                      <span>Home</span>
+                    </div>
+
+                 
+
+
+                    <div  className="py-2 rounded-[2px_2px_2px_2px] hover:bg-[#3d3c3c] mx-1 my-1 hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6)] flex items-center gap-1  px-2  text-white text-[15px] hover:cursor-pointer font-semibold hover:pl-3.5 transition-all  ">
+                      <FileText size={18} className="mt-0.5" strokeWidth={2} />
+                      <span>Documents</span>
+                    </div>
+
+                    <div  className="py-2 rounded-[2px_2px_2px_2px] hover:bg-[#3d3c3c] mx-1 my-1 hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6)] flex items-center gap-1  px-2  text-white text-[15px] hover:pl-3.5 hover:cursor-pointer font-semibold  transition-all  ">
+                      <ArrowDownToLine size={18} className="mt-0.5" strokeWidth={2} />
+                      <span>Downloads</span>
+                    </div>
+
+
+                    <div  className="py-2 rounded-[2px_2px_2px_2px] hover:bg-[#3d3c3c] mx-1 my-1 hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6)] flex items-center gap-1  px-2  text-white text-[15px] hover:cursor-pointer font-semibold hover:pl-3.5 transition-all  ">
+                      <Music4 size={18} className="mt-0.5" strokeWidth={2} />
+                      <span>Music</span>
+                    </div>
+
+
+                     <div  className="py-2 rounded-[2px_2px_2px_2px] hover:bg-[#3d3c3c] mx-1 my-1 hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6)] flex items-center gap-1  px-2  text-white text-[15px] hover:cursor-pointer font-semibold hover:pl-3.5 transition-all  ">
+                      <ImageIcon size={18} className="mt-0.5" strokeWidth={2} />
+                      <span>Pictures</span>
+                    </div>
+
+
+                    <div  className="py-2 rounded-[2px_2px_2px_2px] hover:bg-[#3d3c3c] mx-1 my-1 hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6)] flex items-center gap-1  px-2  text-white text-[15px] hover:cursor-pointer font-semibold  hover:pl-3.5 transition-all ">
+                      <Film  size={18} className="mt-0.5" strokeWidth={2} />
+                      <span>Videos</span>
+                    </div>
+
+                  
+                    <div  className="py-2 rounded-[2px_2px_2px_2px] hover:bg-[#3d3c3c] mx-1 my-1 hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6)] flex items-center gap-1  px-2  text-white text-[15px] hover:cursor-pointer font-semibold hover:pl-3.5 transition-all  ">
+                      <Trash2 size={18} className="mt-0.5" strokeWidth={2} />
+                      <span>Trash</span>
+                    </div>
+
+                        <hr className="bg-[#1C1C1C] text-[#1C1C1C]" />
+
+                    <div className="py-2 rounded-[2px_2px_2px_2px] hover:bg-[#3d3c3c] mx-1 my-1 hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6)] flex items-center gap-1  px-2  text-white text-[15px] hover:cursor-pointer font-semibold hover:pl-3.5 transition-all  ">
+                      <HardDrive size={18} className="mt-0.5" strokeWidth={2} />
+                      <span>Hard Disk</span>
+                    </div>
+
+                     <hr className="bg-[#1C1C1C] text-[#1C1C1C]" />
+
+                     
+
+                    <div className="py-2 rounded-[2px_2px_2px_2px] hover:bg-[#3d3c3c] mx-1 my-1 hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6)] flex items-center gap-1  px-2  text-white text-[15px] hover:cursor-pointer font-semibold hover:pl-3.5 transition-all  ">
+                      <Plus size={18} className="mt-0.5" strokeWidth={2} />
+                      <span>Other Locations</span>
+                    </div>
+
+                  
+
+                    
+
+                    
+
+                  
+
+                    
+
+
 
               </div>
 
-              <div className="w-[75%] bg-[#333333] h-full">
-
+              <div className="w-[75%] flex-col bg-[#2C2C2C] h-full flex justify-center items-center">
+                  <FolderX strokeWidth={1.5} color="#5a5958"  size={55}/>
+                  <p className="text-[25px] mb-13 text-[#5a5958] font-semibold ">Folder is Empty</p>
               </div>
 
           </div>
 
-      </div>
+      </motion.div>
+
+
 
 
       </div>
+
+
     </div>
 
 
