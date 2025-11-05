@@ -4,13 +4,36 @@ import Image from "next/image"
 import { useState,useEffect,useRef } from "react"
 import Tooltip from '@mui/material/Tooltip';
 import MyComputer from "./_component/MyComputer";
-
+import CircularProgress from '@mui/material/CircularProgress';
 export default function Home() {
 
   const containerRef = useRef(null)
   const [windows,setWindows] = useState([])
   const [zCounter,setZcounter] = useState(1)
   const [windowsCountInfo,setWindowsCountInfo] = useState([])
+  const [isLoaded,setIsloaded] = useState(false)
+
+
+useEffect(() => {
+  const handleLoad = () => {
+    setIsloaded(true)
+  };
+
+  if (document.readyState === "complete") {
+    // Page already loaded
+    handleLoad();
+  } else {
+    // Wait for full load
+    window.addEventListener("load", handleLoad);
+  }
+
+  // Cleanup
+  return () => {
+    window.removeEventListener("load", handleLoad);
+  };
+}, []);
+
+
 
   const [timeDate,setTimeDate] = useState()
    useEffect(() => {
@@ -61,7 +84,13 @@ export default function Home() {
 }
 
 
-
+  if(!isLoaded){
+    return<>
+    <div className="h-screen flex justify-center items-center">
+      <CircularProgress color="black"/>
+    </div>
+    </>
+  }
 
   return <>
  <div ref={containerRef} className="h-screen overflow-hidden select-none bg-[url('/wall.jpg')] bg-cover bg-center">
