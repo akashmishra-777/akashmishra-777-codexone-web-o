@@ -1,60 +1,16 @@
 "use client"
-import {BatteryFull,Wifi,ChevronDown,Volume2,Grip,StarOff,ArrowDownToLine,ChevronLeft,History,FileText,ChevronRight,X,Trash2,House,Search,HardDrive,Plus,Music4,Minus,FolderX ,ImageIcon,Film} from "lucide-react"
+import {BatteryFull,Wifi,ChevronDown,Volume2,Grip} from "lucide-react"
 import Image from "next/image"
 import { useState,useEffect,useRef } from "react"
-import { motion } from "framer-motion";
 import Tooltip from '@mui/material/Tooltip';
+import MyComputer from "./_component/MyComputer";
+
 export default function Home() {
 
-
-
-  const containerRef = useRef(null);
-  const [size, setSize] = useState({ width: 600, height: 400 });
-  const [position, setPosition] = useState({ x: 100, y: 100 });
-  const [isResizing, setIsResizing] = useState(false);
-  const [resizeDir, setResizeDir] = useState(null);
-
-
-
-  const startResize = (e, dir) => {
-    e.stopPropagation();
-    e.preventDefault();
-    setIsResizing(true);
-    setResizeDir(dir);
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isResizing) return;
-
-    setSize((prev) => {
-      const newSize = { ...prev };
-      const deltaX = e.movementX;
-      const deltaY = e.movementY;
-
-      if (resizeDir.includes("right"))
-        newSize.width = Math.max(300, prev.width + deltaX);
-      if (resizeDir.includes("bottom"))
-        newSize.height = Math.max(200, prev.height + deltaY);
-      if (resizeDir.includes("left")) {
-        newSize.width = Math.max(300, prev.width - deltaX);
-        setPosition((p) => ({ ...p, x: p.x + deltaX }));
-      }
-      if (resizeDir.includes("top")) {
-        newSize.height = Math.max(200, prev.height - deltaY);
-        setPosition((p) => ({ ...p, y: p.y + deltaY }));
-      }
-
-      return newSize;
-    });
-  };
-
-  const stopResize = () => {
-    setIsResizing(false);
-    setResizeDir(null);
-  };
-
-
-  
+  const containerRef = useRef(null)
+  const [windows,setWindows] = useState([])
+  const [zCounter,setZcounter] = useState(1)
+  const [windowsCountInfo,setWindowsCountInfo] = useState([])
 
   const [timeDate,setTimeDate] = useState()
    useEffect(() => {
@@ -71,11 +27,41 @@ export default function Home() {
       setTimeDate(formatted.replace(',', ' -'))
     }
 
-    updateTime() // run once immediately
-    const interval = setInterval(updateTime, 1000) // update every second
+    updateTime() 
+    const interval = setInterval(updateTime, 1000)
 
-    return () => clearInterval(interval) // ✅ cleanup on unmount
-  }, []) // ✅
+    return () => clearInterval(interval) 
+  }, [])
+
+
+
+  function HandleWindowsCountStatus(){
+
+  }
+
+
+  function OpenFiles(){
+    const newId = "files - "+ Date.now();
+    setWindows((prev)=>[...prev,{id:newId,type:"files",isVisible:true,zIndex:zCounter+1}])
+    setZcounter((z)=>z+1)
+
+  }
+
+
+ function BringToFront(id) {
+  const maxz = zCounter + 1;
+
+  setWindows((prev) =>
+    prev.map((win) =>
+      win.id === id ? { ...win, zIndex: maxz } : win
+    )
+  );
+
+  setZcounter(maxz);
+}
+
+
+
 
   return <>
  <div ref={containerRef} className="h-screen overflow-hidden select-none bg-[url('/wall.jpg')] bg-cover bg-center">
@@ -85,13 +71,24 @@ export default function Home() {
     
 
       
-        <span className="text-[13.5px] font-semibold ">Activities</span>
+        <div className="flex items-center gap-1.5 w-[40%]">
+
+          <span className="text-[13.5px] font-semibold mr-3">Activities</span>
+
+          
+
+
+         
+
+          <span className="text-[14px] font-semibold bg-[#606060]/40 px-3 hover:bg-[#606060]/30 rounded-[1px] py-0.5 hover:cursor-pointer border-b-2">Google Chrome</span>
+
+        </div>
         
     
 
-      <span className="text-[13.5px] font-semibold ">{timeDate}</span>
+      <span className="text-[13.5px] font-semibold w-[10%] ">{timeDate}</span>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 w-[40%] justify-end">
         <Volume2 size={18} strokeWidth={2} color="#C2BFC0" />
         <Wifi size={18} strokeWidth={2} color="#C2BFC0" />
         <BatteryFull size={22} strokeWidth={1.5} color="#C2BFC0" />
@@ -100,7 +97,7 @@ export default function Home() {
 
     </div>
 
-    <div className="h-[96.5%] flex overflow-hidden">
+    <div className="h-[96.5%] flex overflow-hidden ">
       <div className="bg-[#140D14]/30 overflow-hidden  px-0 py-3 border-r-[1px] border-slate-900/30 backdrop-blur-md w-[4%] z-0 flex flex-col items-center justify-between ">
 
         <div className="flex flex-col items-center justify-between">
@@ -121,7 +118,7 @@ export default function Home() {
            <Tooltip placement="right" arrow title="Files">
          <div className="flex items-center justify-center px-2 bg-white/15 hover:cursor-pointer  py-2 rounded-md gap-0  mt-2">
      
-          <Image src={"/files.png"} className="hover:scale-[1.1]" alt="Not found" width={40} height={40}/>
+          <Image onClick={OpenFiles} src={"/files.png"} className="hover:scale-[1.1]" alt="Not found" width={40} height={40}/>
         </div>
         </Tooltip>
 
@@ -155,160 +152,45 @@ export default function Home() {
       <div 
      
       
-      className="overflow-hidden z-1 w-[96%] flex justify-center items-center">
+     className="w-[96%] flex justify-center items-center">
+
+       
 
 
-      <motion.div
-       ref={containerRef}
-  drag
-  dragMomentum={false}
-  dragElastic={0}
-  transition={{ type: "tween", duration: 0 }}
-  className="w-[950px] resize h-[650px] min-w-[750px] min-h-[550px] max-w-[1400px] max-h-[900px] absolute overflow-hidden  backdrop-blur rounded-lg border border-black shadow-lg">
+        
 
-          <div className="py-2 flex items-center justify-between px-2 bg-[#222222] border-b-[1px] border-black">
+     {
+  windows.map((win) => {
+    if (win.type === "files") {
+      return (
+        <MyComputer
+          key={win.id}
+          id={win.id}
+          zIndex={win.zIndex}
+          bringToFront={() => BringToFront(win.id)}
+          isVisible={win.isVisible}
+          setIsVisible={(val) => {
+            setWindows((prev) =>
+              prev.map((winx) =>
+                winx.id === win.id ? { ...winx, isVisible: val } : winx
+              )
+            );
+          }}
+          close={(val) => {
+            setWindows((prev) =>
+              prev.filter((windowx) => windowx.id !== val)
+            );
+          }}
+        />
+      );
+    } else {
+      return null;
+    }
+  })
+}
 
-                <div className="flex items-center gap-0.5">
-
-                    <ChevronLeft  size={20} color="#C2BFC0" className="bg-[#464648]  rounded-tl-sm w-[25px] h-[25px] rounded-bl-sm hover:cursor-pointer hover:scale-[1.05] "/>
-                    
-                    <ChevronRight size={20} color="#C2BFC0" className="bg-[#393939] rounded-br-sm w-[24px] h-[25px] rounded-tr-sm hover:cursor-pointer hover:scale-[1.05]" />
-
-                  <button className="flex items-center ml-2 gap-1 text-[12px] font-semibold text-[#C2BFC0] bg-[#464443] pl-2 pr-1 py-[4px] rounded-[4px] hover:cursor-pointer shadow-[inset_0px_0px_2px_rgba(0,0,0,0.6)]" >
-
-                    <House size={14} color="#C2BFC0" />
-                      Home
-                    <ChevronDown size={16} strokeWidth={2.5} color="#C2BFC0" className="mt-1" />
-
-                  </button>
-
-                </div>
-
-                <div className="flex items-center gap-2">
-                 
-                  <button className="bg-[#494949] shadow-[inset_0px_0px_2px_rgba(0,0,0,0.6)]  px-1.5 py-1.5 rounded-[4px] mr-1">
-                    
-                  <Search size={15} color="#C2BFC0" strokeWidth={3} className=" hover:cursor-pointer  hover:scale-[1.05] " />
-
-                  </button>
-                  
-                  <button title="Minimize">
-
-                    <Minus  size={15} color="#C2BFC0" strokeWidth={3} className=" mt-1 hover:cursor-pointer  hover:scale-[1.05] " />
-
-                  </button>
-                  
-                  <button title="Close">
-
-                    <X size={16} color="#C54918" strokeWidth={3} className=" hover:cursor-pointer  hover:scale-[1.05] " />
-
-                  </button>
-
-                 
-
-                </div>
-
-          </div>
-
-          <div className=" h-full flex items-center justify-center  ">
-
-              <div className="w-[25%] overflow-scroll bg-[#282828] border-r-[1px] border-[#1C1C1C] h-full">
-
-                    <div className="py-2 rounded-[2px_2px_2px_2px] shadow-[inset_2.5px_-2.5px_2px_rgba(0,0,0,0.6)] mx-1 my-1 flex items-center gap-1  px-2 bg-[#DA3451] text-white text-[15px] hover:cursor-pointer font-semibold  ">
-                      <History size={18} className="mt-0.5" strokeWidth={2} />
-                      <span>Recents</span>
-                    </div>
-
-                   
-
-                    <div className="py-2 rounded-[2px_2px_2px_2px] hover:bg-[#3d3c3c] mx-1 my-1 hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6)] flex items-center gap-1  px-2  text-white text-[15px] hover:cursor-pointer font-semibold hover:pl-3.5 transition-all  ">
-                      <StarOff size={18} className="mt-0.5" strokeWidth={2} />
-                      <span>Starred</span>
-                    </div>
-
-
-                    <hr className="bg-[#1C1C1C] text-[#1C1C1C]" />
-
-                    <div  className="py-2 rounded-[2px_2px_2px_2px] hover:bg-[#3d3c3c] mx-1 my-1 hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6)] flex items-center gap-1  px-2  text-white text-[15px] hover:cursor-pointer font-semibold hover:pl-3.5 transition-all  ">
-                      <House size={18} className="mt-0.5" strokeWidth={2} />
-                      <span>Home</span>
-                    </div>
-
-                 
-
-
-                    <div  className="py-2 rounded-[2px_2px_2px_2px] hover:bg-[#3d3c3c] mx-1 my-1 hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6)] flex items-center gap-1  px-2  text-white text-[15px] hover:cursor-pointer font-semibold hover:pl-3.5 transition-all  ">
-                      <FileText size={18} className="mt-0.5" strokeWidth={2} />
-                      <span>Documents</span>
-                    </div>
-
-                    <div  className="py-2 rounded-[2px_2px_2px_2px] hover:bg-[#3d3c3c] mx-1 my-1 hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6)] flex items-center gap-1  px-2  text-white text-[15px] hover:pl-3.5 hover:cursor-pointer font-semibold  transition-all  ">
-                      <ArrowDownToLine size={18} className="mt-0.5" strokeWidth={2} />
-                      <span>Downloads</span>
-                    </div>
-
-
-                    <div  className="py-2 rounded-[2px_2px_2px_2px] hover:bg-[#3d3c3c] mx-1 my-1 hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6)] flex items-center gap-1  px-2  text-white text-[15px] hover:cursor-pointer font-semibold hover:pl-3.5 transition-all  ">
-                      <Music4 size={18} className="mt-0.5" strokeWidth={2} />
-                      <span>Music</span>
-                    </div>
-
-
-                     <div  className="py-2 rounded-[2px_2px_2px_2px] hover:bg-[#3d3c3c] mx-1 my-1 hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6)] flex items-center gap-1  px-2  text-white text-[15px] hover:cursor-pointer font-semibold hover:pl-3.5 transition-all  ">
-                      <ImageIcon size={18} className="mt-0.5" strokeWidth={2} />
-                      <span>Pictures</span>
-                    </div>
-
-
-                    <div  className="py-2 rounded-[2px_2px_2px_2px] hover:bg-[#3d3c3c] mx-1 my-1 hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6)] flex items-center gap-1  px-2  text-white text-[15px] hover:cursor-pointer font-semibold  hover:pl-3.5 transition-all ">
-                      <Film  size={18} className="mt-0.5" strokeWidth={2} />
-                      <span>Videos</span>
-                    </div>
-
-                  
-                    <div  className="py-2 rounded-[2px_2px_2px_2px] hover:bg-[#3d3c3c] mx-1 my-1 hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6)] flex items-center gap-1  px-2  text-white text-[15px] hover:cursor-pointer font-semibold hover:pl-3.5 transition-all  ">
-                      <Trash2 size={18} className="mt-0.5" strokeWidth={2} />
-                      <span>Trash</span>
-                    </div>
-
-                        <hr className="bg-[#1C1C1C] text-[#1C1C1C]" />
-
-                    <div className="py-2 rounded-[2px_2px_2px_2px] hover:bg-[#3d3c3c] mx-1 my-1 hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6)] flex items-center gap-1  px-2  text-white text-[15px] hover:cursor-pointer font-semibold hover:pl-3.5 transition-all  ">
-                      <HardDrive size={18} className="mt-0.5" strokeWidth={2} />
-                      <span>Hard Disk</span>
-                    </div>
-
-                     <hr className="bg-[#1C1C1C] text-[#1C1C1C]" />
-
-                     
-
-                    <div className="py-2 rounded-[2px_2px_2px_2px] hover:bg-[#3d3c3c] mx-1 my-1 hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6)] flex items-center gap-1  px-2  text-white text-[15px] hover:cursor-pointer font-semibold hover:pl-3.5 transition-all  ">
-                      <Plus size={18} className="mt-0.5" strokeWidth={2} />
-                      <span>Other Locations</span>
-                    </div>
-
-                  
-
-                    
-
-                    
-
-                  
-
-                    
-
-
-
-              </div>
-
-              <div className="w-[75%] flex-col bg-[#2C2C2C] h-full flex justify-center items-center">
-                  <FolderX strokeWidth={1.5} color="#5a5958"  size={55}/>
-                  <p className="text-[25px] mb-13 text-[#5a5958] font-semibold ">Folder is Empty</p>
-              </div>
-
-          </div>
-
-      </motion.div>
+        
+     
 
 
 
