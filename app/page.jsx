@@ -6,6 +6,8 @@ import Tooltip from '@mui/material/Tooltip';
 import MyComputer from "./_component/MyComputer";
 import CircularProgress from '@mui/material/CircularProgress';
 import Notepad from "./_component/Notepad";
+import Terminal from "./_component/Terminal";
+import Settingsx from "./_component/Settings";
 
 export default function Home() {
 
@@ -60,8 +62,17 @@ useEffect(() => {
 
 
 
-  function HandleWindowsCountStatus(){
+  function OpenTerminal(){
+    const newId = "terminal - "+ Date.now();
+    setWindows((prev)=>[...prev,{id:newId,type:"terminal",isVisible:true,zIndex:zCounter+1}])
+    setZcounter((z)=>z+1)
+  }
 
+
+   function OpenSettings(){
+    const newId = "settings - "+ Date.now();
+    setWindows((prev)=>[...prev,{id:newId,type:"settings",isVisible:true,zIndex:zCounter+1}])
+    setZcounter((z)=>z+1)
   }
 
 
@@ -143,7 +154,7 @@ useEffect(() => {
 
           <Tooltip arrow title="Terminal" placement="right"  >
             <div className="flex items-center justify-center gap-0 px-2 py-2  rounded-sm shadow-sm hover:cursor-pointer">
-          <Image src={"/terminal.png"} className="hover:scale-[1.1]" alt="Not found" width={40} height={40}/>
+          <Image onClick={OpenTerminal} src={"/terminal.png"} className="hover:scale-[1.1]" alt="Not found" width={40} height={40}/>
         </div>
           </Tooltip>
 
@@ -189,7 +200,7 @@ useEffect(() => {
         <Tooltip placement="right" arrow title="Settings">
           <div className="flex items-center justify-center px-2 hover:cursor-pointer  py-2 rounded-md gap-0  mt-2 mx-0.5">
           
-          <Image src={"/settings.png"} className="hover:scale-[1.1]" alt="Not found" width={100} height={100}/>
+          <Image onClick={OpenSettings} src={"/settings.png"} className="hover:scale-[1.1]" alt="Not found" width={100} height={100}/>
         </div>
         </Tooltip>
 
@@ -262,6 +273,47 @@ useEffect(() => {
               prev.filter((windowx) => windowx.id !== val)
             );
           }}
+      />
+    }else if(win.type == "terminal"){
+      return <Terminal
+      key={win.id}
+          id={win.id}
+          zIndex={win.zIndex}
+          bringToFront={() => BringToFront(win.id)}
+          isVisible={win.isVisible}
+          setIsVisible={(val) => {
+            setWindows((prev) =>
+              prev.map((winx) =>
+                winx.id === win.id ? { ...winx, isVisible: val } : winx
+              )
+            );
+          }}
+          close={(val) => {
+            setWindows((prev) =>
+              prev.filter((windowx) => windowx.id !== val)
+            );
+          }}
+      />
+    }else if (win.type == "settings"){
+      return <Settingsx
+      key={win.id}
+          id={win.id}
+          zIndex={win.zIndex}
+          bringToFront={() => BringToFront(win.id)}
+          isVisible={win.isVisible}
+          setIsVisible={(val) => {
+            setWindows((prev) =>
+              prev.map((winx) =>
+                winx.id === win.id ? { ...winx, isVisible: val } : winx
+              )
+            );
+          }}
+          close={(val) => {
+            setWindows((prev) =>
+              prev.filter((windowx) => windowx.id !== val)
+            );
+          }}
+      
       />
     }
   })
